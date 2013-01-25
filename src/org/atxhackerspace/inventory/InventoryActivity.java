@@ -25,7 +25,8 @@ import android.widget.ImageView;
 
 public class InventoryActivity extends Activity {
 	IntentIntegrator integrator;
-	EditText item_code;
+	
+	EditText username, password, item_code, item_name, item_description;
 	ImageView image_to_upload;
 	
 	public static final int SHRINK_MAX = 1024;
@@ -38,9 +39,13 @@ public class InventoryActivity extends Activity {
 
 		integrator = new IntentIntegrator(this);
 
-		final EditText username = (EditText) findViewById(R.id.wiki_username);
+		username = (EditText) findViewById(R.id.wiki_username);
+		password = (EditText) findViewById(R.id.wiki_password);
 		item_code = (EditText) findViewById(R.id.item_code);
 		image_to_upload = (ImageView) findViewById(R.id.image_to_upload);
+		item_name = (EditText) findViewById(R.id.item_name);
+		item_description = (EditText) findViewById(R.id.item_description);
+		
 		setImagePreview();
 
 		final Button scan = (Button) findViewById(R.id.scan);
@@ -66,7 +71,11 @@ public class InventoryActivity extends Activity {
 		submit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				WikiWhack.create(username);
+				try {
+					WikiWhack.create(username.getText().toString(), password.getText().toString(),
+							item_code.getText().toString(), getPreviewImage(),
+							item_name.getText().toString(), item_description.getText().toString());
+				} catch (FileNotFoundException e) {} // No image? Just don't do anything
 			}
 		});
 	}
