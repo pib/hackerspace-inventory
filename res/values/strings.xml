@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Hackerspace Inventory</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_inventory">Hackerspace Inventory</string>
+    <string name="scan_qr">Scan Code</string>
+    <string name="item_id">Item ID</string>
+    <string name="wiki_password">Wiki Password</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="image_to_upload">Image To Upload</string>
+    <string name="item_name">Item Name</string>
+    <string name="item_description">Item Description (wikitext allowed)</string>
+    <string name="submit">Submit</string>
+    <string name="wiki_username">Wiki Username</string>
+
+</resources>
