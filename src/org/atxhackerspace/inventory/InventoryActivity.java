@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.MalformedURLException;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class InventoryActivity extends Activity {
 	IntentIntegrator integrator;
@@ -31,12 +33,20 @@ public class InventoryActivity extends Activity {
 	
 	public static final int SHRINK_MAX = 1024;
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
+	
+	private WikiWhack ww;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_inventory);
 
+		try {
+			ww = new WikiWhack("http://atxhackerspace.org");
+		} catch (MalformedURLException e1) {
+			Toast.makeText(this, R.string.invalid_base_url, Toast.LENGTH_LONG).show();
+		}
+		
 		integrator = new IntentIntegrator(this);
 
 		username = (EditText) findViewById(R.id.wiki_username);
@@ -72,7 +82,7 @@ public class InventoryActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				try {
-					WikiWhack.create(username.getText().toString(), password.getText().toString(),
+					ww.create(username.getText().toString(), password.getText().toString(),
 							item_code.getText().toString(), getPreviewImage(),
 							item_name.getText().toString(), item_description.getText().toString());
 				} catch (FileNotFoundException e) {} // No image? Just don't do anything

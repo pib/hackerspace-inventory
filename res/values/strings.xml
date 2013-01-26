@@ -13,5 +13,6 @@
     <string name="item_description">Item Description (wikitext allowed)</string>
     <string name="submit">Submit</string>
     <string name="wiki_username">Wiki Username</string>
+    <string name="invalid_base_url">Base URL invalid! Posting probably won\'t work :(</string>
 
 </resources>
