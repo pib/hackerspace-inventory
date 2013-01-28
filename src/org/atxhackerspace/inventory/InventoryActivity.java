@@ -4,19 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.net.MalformedURLException;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -24,6 +20,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class InventoryActivity extends Activity {
 	IntentIntegrator integrator;
@@ -41,11 +40,7 @@ public class InventoryActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_inventory);
 
-		try {
-			ww = new WikiWhack("http://atxhackerspace.org");
-		} catch (MalformedURLException e1) {
-			Toast.makeText(this, R.string.invalid_base_url, Toast.LENGTH_LONG).show();
-		}
+		ww = new WikiWhack(this.getApplicationContext(), "http://atxhackerspace.org");
 		
 		integrator = new IntentIntegrator(this);
 
@@ -82,10 +77,14 @@ public class InventoryActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				try {
-					ww.create(username.getText().toString(), password.getText().toString(),
-							item_code.getText().toString(), getPreviewImage(),
+					InventoryItem toPost = new InventoryItem(username.getText().toString(), password.getText().toString(),
+							item_code.getText().toString(), getTempFile(true), getPreviewImage(),
 							item_name.getText().toString(), item_description.getText().toString());
-				} catch (FileNotFoundException e) {} // No image? Just don't do anything
+					ww.create(toPost);
+					
+				} catch (FileNotFoundException e) {
+					Toast.makeText(InventoryActivity.this, "Take a picture to upload first!", Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 	}
@@ -156,7 +155,7 @@ public class InventoryActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_inventory, menu);
+		//getMenuInflater().inflate(R.menu.activity_inventory, menu);
 		return true;
 	}
 

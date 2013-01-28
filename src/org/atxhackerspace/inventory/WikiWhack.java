@@ -1,44 +1,76 @@
 package org.atxhackerspace.inventory;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
+import java.io.IOException;
 
-import android.graphics.Bitmap;
-import android.net.http.AndroidHttpClient;
+import javax.security.auth.login.LoginException;
+
+import org.wikipedia.Wiki;
+
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 public class WikiWhack {
-	private static final String ENC = "application/x-www-form-urlencoded";
-
-	private NameValuePair p(String name, String val) {
-		return new BasicNameValuePair(name, val);
-	}
-
-	private URL root_url;
-
-	public WikiWhack(String base_url) throws MalformedURLException {
-		root_url = new URL(new URL(base_url), "/api.php");
-	}
-
-	public String create(String username, String password, String item_code,
-			Bitmap item_image, String item_name, String item_description) {
-		URL url;
-		try {
-			url = api_url(new NameValuePair[] { p("action", "login"),
-					p("lgname", username), p("lgpassword", password) });
-		} catch (MalformedURLException e) {
-			return "URL was invalid :(";
+	public class CreateTask extends AsyncTask<InventoryItem, String, Integer> {
+		protected Integer doInBackground(InventoryItem... wis) {
+			InventoryItem wi = wis[0];
+			
+			Wiki wiki = new Wiki(wikiUrl, "");
+			
+			try {
+				publishProgress("Logging in...");
+				wiki.login(wi.username, wi.password);
+				publishProgress("Logged in!");
+				
+				String filename = String.format("%s_%s.jpg", wi.item_name.replace(' ', '-'), wi.item_code);
+				String image_tag = "";
+				if (wi.item_image != null) {
+					publishProgress("Uploading image...");
+					wiki.upload(wi.image_file, filename, wi.item_name, "Inventory App");
+					publishProgress("Image uploaded!");
+					image_tag = String.format("[[File:%s|300px|right]]\n", filename);
+				}
+				
+				String tpl = "= %s =\n" + image_tag
+						+ "== Description ==\n\n" + wi.item_description + "\n"
+						+ "== Links and Information ==\n\n"
+						+ "== Inventory ==\n\n1, I guess"
+						+ "== Location ==\n\nThe Hackerspace, probably";
+				String body = String.format(tpl, wi.item_name, wi.item_description);
+				String title = String.format("Inventory/%s", wi.item_code);
+				if (wiki.exists(title)[0]) {
+					return R.string.page_exists;
+				}
+				wiki.edit(title, body, "Inventory App Added");
+			} catch (IOException e) {
+				Log.d("WikiWhack", "IO Error", e);
+				return R.string.io_error;
+			} catch (LoginException e) {
+				return R.string.login_failed;
+			}
+			return R.string.page_created; // "Wiki Page Created";
 		}
-		return "Wiki Page Created";
+		
+		protected void onProgressUpdate(String message) {
+			Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+		}
+		
+		protected void onPostExecute(Integer result) {
+			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+		}
 	}
-	
-	private URL api_url(NameValuePair... args) throws MalformedURLException {
-		String query = "?" + URLEncodedUtils.format(Arrays.asList(args), ENC);
-		return new URL(root_url, query);
+
+	private String wikiUrl;
+	Context context;
+
+	public WikiWhack(Context context, String wikiUrl) {
+		this.wikiUrl = wikiUrl;
+		this.context = context;
+	}
+
+	public void create(InventoryItem data) {
+		CreateTask create = new CreateTask();
+		create.execute(data);
 	}
 }
