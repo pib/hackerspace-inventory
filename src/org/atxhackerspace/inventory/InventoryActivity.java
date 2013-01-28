@@ -40,7 +40,7 @@ public class InventoryActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_inventory);
 
-		ww = new WikiWhack(this.getApplicationContext(), "http://atxhackerspace.org");
+		ww = new WikiWhack(this.getApplicationContext(), "atxhackerspace.org");
 		
 		integrator = new IntentIntegrator(this);
 
@@ -80,6 +80,10 @@ public class InventoryActivity extends Activity {
 					InventoryItem toPost = new InventoryItem(username.getText().toString(), password.getText().toString(),
 							item_code.getText().toString(), getTempFile(true), getPreviewImage(),
 							item_name.getText().toString(), item_description.getText().toString());
+					if (toPost.username.matches("") || toPost.password.matches("") || toPost.item_code.matches("") || toPost.item_name.matches("") || toPost.item_description.matches("")) {
+						Toast.makeText(InventoryActivity.this, "All fields are required!", Toast.LENGTH_LONG).show();
+						return;
+					}
 					ww.create(toPost);
 					
 				} catch (FileNotFoundException e) {
@@ -147,7 +151,9 @@ public class InventoryActivity extends Activity {
 			IntentResult scanResult = IntentIntegrator.parseActivityResult(
 					requestCode, resultCode, intent);
 			if (scanResult != null) {
-				item_code.setText(scanResult.getContents());
+				String[] url_parts = scanResult.getContents().split("/");
+				String code = url_parts[url_parts.length - 1];
+				item_code.setText(code);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package org.atxhackerspace.inventory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.security.auth.login.LoginException;
@@ -17,6 +18,7 @@ public class WikiWhack {
 			InventoryItem wi = wis[0];
 			
 			Wiki wiki = new Wiki(wikiUrl, "");
+			wiki.setUsingCompressedRequests(false);
 			
 			try {
 				publishProgress("Logging in...");
@@ -39,8 +41,13 @@ public class WikiWhack {
 						+ "== Location ==\n\nThe Hackerspace, probably";
 				String body = String.format(tpl, wi.item_name, wi.item_description);
 				String title = String.format("Inventory/%s", wi.item_code);
-				if (wiki.exists(title)[0]) {
+
+				try {
+					wiki.getPageText(title);
+					// Next line only runs if the page exists
 					return R.string.page_exists;
+				} catch (FileNotFoundException e) {
+					// Expected if item isn't in inventory yet.
 				}
 				wiki.edit(title, body, "Inventory App Added");
 			} catch (IOException e) {
@@ -48,6 +55,8 @@ public class WikiWhack {
 				return R.string.io_error;
 			} catch (LoginException e) {
 				return R.string.login_failed;
+			} finally {
+				wiki.logout();
 			}
 			return R.string.page_created; // "Wiki Page Created";
 		}
