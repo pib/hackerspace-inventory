@@ -31,14 +31,14 @@ public class WikiWhack {
 					publishProgress("Uploading image...");
 					wiki.upload(wi.image_file, filename, wi.item_name, "Inventory App");
 					publishProgress("Image uploaded!");
-					image_tag = String.format("[[File:%s|300px|right]]\n", filename);
+					image_tag = String.format("[[File:%s|300px|right]]\n\n", filename);
 				}
 				
 				String tpl = "= %s =\n" + image_tag
-						+ "== Description ==\n\n" + wi.item_description + "\n"
+						+ "== Description ==\n\n" + wi.item_description + "\n\n"
 						+ "== Links and Information ==\n\n"
-						+ "== Inventory ==\n\n1, I guess"
-						+ "== Location ==\n\nThe Hackerspace, probably";
+						+ "== Inventory ==\n\n1, I guess\n\n"
+						+ "== Location ==\n\nThe Hackerspace, probably\n\n";
 				String body = String.format(tpl, wi.item_name, wi.item_description);
 				String title = String.format("Inventory/%s", wi.item_code);
 
