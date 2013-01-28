@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,7 +26,7 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-public class InventoryActivity extends Activity {
+public class InventoryActivity extends Activity implements CreateListener {
 	IntentIntegrator integrator;
 	
 	EditText username, password, item_code, item_name, item_description;
@@ -40,7 +42,7 @@ public class InventoryActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_inventory);
 
-		ww = new WikiWhack(this.getApplicationContext(), "atxhackerspace.org");
+		ww = new WikiWhack(this.getApplicationContext(), this, "atxhackerspace.org");
 		
 		integrator = new IntentIntegrator(this);
 
@@ -165,4 +167,23 @@ public class InventoryActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public void onCreateComplete(Integer result) {
+		new AlertDialog.Builder(this)
+			.setMessage(getString(result))
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					InventoryActivity.this.clear();
+					dialog.dismiss();
+				}
+			}).show();
+	}
+
+	protected void clear() {
+		item_code.setText("");
+		image_to_upload.setImageResource(0);
+		item_name.setText("");
+		item_description.setText("");
+	}
 }

@@ -7,13 +7,19 @@ import javax.security.auth.login.LoginException;
 
 import org.wikipedia.Wiki;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 public class WikiWhack {
 	public class CreateTask extends AsyncTask<InventoryItem, String, Integer> {
+		private ProgressDialog progress;
+
+		protected void onPreExecute() {
+			progress = ProgressDialog.show(context, "Posting to Wiki", "Starting...");
+		}
+
 		protected Integer doInBackground(InventoryItem... wis) {
 			InventoryItem wi = wis[0];
 			
@@ -62,19 +68,22 @@ public class WikiWhack {
 		}
 		
 		protected void onProgressUpdate(String message) {
-			Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+			progress.setMessage(message);
 		}
 		
 		protected void onPostExecute(Integer result) {
-			Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+			progress.dismiss();
+			listener.onCreateComplete(result);
 		}
 	}
 
 	private String wikiUrl;
 	Context context;
+	CreateListener listener;
 
-	public WikiWhack(Context context, String wikiUrl) {
+	public WikiWhack(Context context, CreateListener listener, String wikiUrl) {
 		this.wikiUrl = wikiUrl;
+		this.listener = listener;
 		this.context = context;
 	}
 
