@@ -169,6 +169,7 @@ public class InventoryActivity extends Activity implements CreateListener {
 
 	@Override
 	public void onCreateComplete(Integer result) {
+        // TODO: Handle errors separately (don't clear, add a "Retry" button, etc.)
 		new AlertDialog.Builder(this)
 			.setMessage(getString(result))
 			.setPositiveButton("OK", new DialogInterface.OnClickListener() {

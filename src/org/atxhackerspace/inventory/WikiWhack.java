@@ -73,6 +73,7 @@ public class WikiWhack {
 		
 		protected void onPostExecute(Integer result) {
 			progress.dismiss();
+            // TODO: Call different callback on errors so they can be handled differently
 			listener.onCreateComplete(result);
 		}
 	}
