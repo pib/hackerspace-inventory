@@ -15,7 +15,13 @@ import android.util.Log;
 public class WikiWhack {
 	public class CreateTask extends AsyncTask<InventoryItem, String, Integer> {
 		private ProgressDialog progress;
-
+		private Wiki wiki; 
+		
+		public CreateTask(Wiki loggedIn)
+		{
+			wiki = loggedIn; 
+		}
+		
 		protected void onPreExecute() {
 			progress = ProgressDialog.show(context, "Posting to Wiki", "Starting...");
 		}
@@ -23,13 +29,7 @@ public class WikiWhack {
 		protected Integer doInBackground(InventoryItem... wis) {
 			InventoryItem wi = wis[0];
 			
-			Wiki wiki = new Wiki(wikiUrl, "");
-			wiki.setUsingCompressedRequests(false);
-			
 			try {
-				publishProgress("Logging in...");
-				wiki.login(wi.username, wi.password);
-				publishProgress("Logged in!");
 				
 				String filename = String.format("%s_%s.jpg", wi.item_name.replace(' ', '-'), wi.item_code);
 				String image_tag = "";
@@ -49,7 +49,7 @@ public class WikiWhack {
 				String title = String.format("Inventory/%s", wi.item_code);
 
 				try {
-					wiki.getPageText(title);
+					if((Boolean)wiki.getPageInfo(title).get("exists"))
 					// Next line only runs if the page exists
 					return R.string.page_exists;
 				} catch (FileNotFoundException e) {
@@ -78,18 +78,18 @@ public class WikiWhack {
 		}
 	}
 
-	private String wikiUrl;
 	Context context;
 	CreateListener listener;
 
-	public WikiWhack(Context context, CreateListener listener, String wikiUrl) {
-		this.wikiUrl = wikiUrl;
+	public WikiWhack(Context context, CreateListener listener) {
+		
 		this.listener = listener;
 		this.context = context;
 	}
 
-	public void create(InventoryItem data) {
-		CreateTask create = new CreateTask();
+	public void create(InventoryItem data, Wiki wiki) {
+		
+		CreateTask create = new CreateTask(wiki);
 		create.execute(data);
 	}
 }
