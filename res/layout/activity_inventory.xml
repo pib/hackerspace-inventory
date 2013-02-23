@@ -1,68 +1,81 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".SetWikiCredentials" >
+    
+    <LinearLayout
+        android:id="@+id/logging_on_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/login_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/getting_wiki_page"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+<ScrollView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
     <RelativeLayout
+        android:id="@+id/entry_screen"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         tools:context=".InventoryActivity" >
 
-        <EditText
-            android:id="@+id/wiki_username"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:hint="@string/wiki_username"
-            android:inputType="textEmailAddress" >
-
-        </EditText>
-
-        <EditText
-            android:id="@+id/wiki_password"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/wiki_username"
-            android:hint="@string/wiki_password"
-            android:inputType="textPassword" >
-        </EditText>
-
-        <EditText
+        <TextView
             android:id="@+id/item_code"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/wiki_password"
             android:layout_toLeftOf="@+id/scan"
+            android:textIsSelectable="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:hint="@string/item_id" >
-        </EditText>
+        </TextView>
 
         <Button
             android:id="@+id/scan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/wiki_password"
             android:text="@string/scan_qr" />
 
-        <LinearLayout android:id="@+id/image_section"
-            android:layout_below="@+id/scan"
-            android:orientation="horizontal"
+        <LinearLayout
+            android:id="@+id/image_section"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-        <ImageView
-            android:id="@+id/image_to_upload"
-            android:layout_weight="2"
-            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/image_to_upload" />
+            android:layout_below="@+id/scan"
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/take_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/take_picture" />
-</LinearLayout>
+            <Button
+                android:id="@+id/take_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/take_picture" />
+
+            <ImageView
+                android:id="@+id/image_to_upload"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:contentDescription="@string/image_to_upload" />
+        </LinearLayout>
+
         <EditText
             android:id="@+id/item_name"
             android:layout_width="fill_parent"
@@ -72,22 +85,28 @@
             android:hint="@string/item_name" >
         </EditText>
 
-        <EditText
-            android:id="@+id/item_description"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/item_name"
-            android:hint="@string/item_description"
-            android:inputType="textMultiLine" />
-
         <Button
             android:id="@+id/submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_description"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:text="@string/submit" />
+
+        <EditText
+            android:id="@+id/item_description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/item_name"
+            android:ems="10"
+            android:hint="@string/item_description"
+            android:inputType="textMultiLine"
+            android:minHeight="@dimen/activity_vertical_margin" />
+
     </RelativeLayout>
 
-</ScrollView>
+</ScrollView>    
+    
+</merge>

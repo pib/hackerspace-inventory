@@ -20,5 +20,9 @@
     <string name="io_error">IO Error :(</string>
     <string name="login_failed">Login Failed!</string>
     <string name="page_exists">Wiki page already exists!</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_atxhackerspace_account_authenticator">ATXHackerspaceAccountAuthenticator</string>
+    <string name="getting_wiki_page">Hang On A Moment......</string>
 
 </resources>
