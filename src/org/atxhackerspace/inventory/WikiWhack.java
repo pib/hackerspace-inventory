@@ -61,9 +61,7 @@ public class WikiWhack {
 				return R.string.io_error;
 			} catch (LoginException e) {
 				return R.string.login_failed;
-			} finally {
-				wiki.logout();
-			}
+			} 
 			return R.string.page_created; // "Wiki Page Created";
 		}
 		
